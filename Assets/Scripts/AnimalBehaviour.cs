@@ -17,4 +17,5 @@ public abstract class AnimalBehaviour : MonoBehaviour
     }
     public abstract void FindFood();
     public abstract void RunAway();
+    public abstract void Move();
 }
