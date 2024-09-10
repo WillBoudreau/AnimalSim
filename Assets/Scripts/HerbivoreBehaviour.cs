@@ -11,7 +11,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
     public float detectionRadius = 5f;
     public float herdRadius = 10f;
     public float runAwayRadius = 10f;
-
     public float HungerRate = 1f;
 
     public GameObject[] Plants;
@@ -21,11 +20,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // for (int i = 0; i < numHerb; i++)
-        // {
-        //     GameObject herbivore = Instantiate(gameObject, transform.position, Quaternion.identity);
-        //     HerbivoreBehaviour herbivoreBehaviour = herbivore.GetComponent<HerbivoreBehaviour>();
-        // }
+        
         agent = GetComponent<NavMeshAgent>();
         Direction = Random.insideUnitSphere * 10f;
         Destination = transform.position + Direction;
@@ -40,13 +35,13 @@ public class HerbivoreBehaviour : AnimalBehaviour
         HungerMeter -= HungerRate * Time.deltaTime;
         Predators = GameObject.FindGameObjectsWithTag("Predator");
         Plants = GameObject.FindGameObjectsWithTag("Plant");
+        //RunAway();
         Move();
-        //Herd();
+        Herd();
         if(HungerMeter <= 50 && !LookingForFood)
         {
             FindFood();
         }
-        RunAway();
     }
     public override void Move()
     {
@@ -57,12 +52,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
             Destination = transform.position + Direction;
             agent.SetDestination(Destination);
         }
-        // if(Vector3.Distance(Destination, transform.position) <= 10f)
-        // {
-        //     Direction = Random.insideUnitSphere * 100f;
-        //     Destination = transform.position + Direction;
-        //     agent.SetDestination(Destination);
-        // }
     }
     public override void  FindFood()
     {
@@ -80,7 +69,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
         Debug.Log("Herd");
         foreach (GameObject herbivore in GameObject.FindGameObjectsWithTag("Herbivore"))
         {
-            if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
+            if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius && Vector3.Distance(herbivore.transform.position, transform.position) > 5f)
             {
                 agent.SetDestination(herbivore.transform.position);
             }
