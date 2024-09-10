@@ -9,7 +9,6 @@ public class PredatorBehaviour : AnimalBehaviour
     public float runAwayRadius = 10f;
     public float speed = 2f;
     public GameObject[] Herbivores;
-    public float HungerMeter = 100f;
     public float HungerRate = 1f;
     public NavMeshAgent agent;
     // Start is called before the first frame update
@@ -22,7 +21,6 @@ public class PredatorBehaviour : AnimalBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(HungerMeter);
        HungerMeter -= HungerRate * Time.deltaTime;
        if(HungerMeter < 0)
        {

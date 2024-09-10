@@ -12,6 +12,8 @@ public class HerbivoreBehaviour : AnimalBehaviour
     public float herdRadius = 10f;
     public float runAwayRadius = 10f;
 
+    public float HungerRate = 1f;
+
     public GameObject[] Plants;
     public GameObject[] Predators;
 
@@ -25,24 +27,46 @@ public class HerbivoreBehaviour : AnimalBehaviour
         //     HerbivoreBehaviour herbivoreBehaviour = herbivore.GetComponent<HerbivoreBehaviour>();
         // }
         agent = GetComponent<NavMeshAgent>();
+        Direction = Random.insideUnitSphere * 10f;
+        Destination = transform.position + Direction;
+        agent.SetDestination(Destination);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Plants = GameObject.FindGameObjectsWithTag("Plant");
+        // Debug.Log("Direction" + Direction);
+        // Debug.Log("Destination" + Destination);
+        HungerMeter -= HungerRate * Time.deltaTime;
         Predators = GameObject.FindGameObjectsWithTag("Predator");
-        //Move();
-        FindFood();
+        Plants = GameObject.FindGameObjectsWithTag("Plant");
+        Move();
+        //Herd();
+        if(HungerMeter <= 50 && !LookingForFood)
+        {
+            FindFood();
+        }
         RunAway();
-        Herd();
     }
     public override void Move()
     {
-        agent.SetDestination(transform.position + Random.insideUnitSphere * 5f);
+        Debug.Log("Remaining Distance" + agent.remainingDistance);
+        if(agent.remainingDistance < 1f)
+        {
+            Direction = Random.insideUnitSphere * 10f;
+            Destination = transform.position + Direction;
+            agent.SetDestination(Destination);
+        }
+        // if(Vector3.Distance(Destination, transform.position) <= 10f)
+        // {
+        //     Direction = Random.insideUnitSphere * 100f;
+        //     Destination = transform.position + Direction;
+        //     agent.SetDestination(Destination);
+        // }
     }
     public override void  FindFood()
     {
+        LookingForFood = true;
         foreach (GameObject plant in Plants)
         {
             if (Vector3.Distance(plant.transform.position, transform.position) < detectionRadius)
@@ -53,6 +77,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
     }
     public void Herd()
     {
+        Debug.Log("Herd");
         foreach (GameObject herbivore in GameObject.FindGameObjectsWithTag("Herbivore"))
         {
             if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
