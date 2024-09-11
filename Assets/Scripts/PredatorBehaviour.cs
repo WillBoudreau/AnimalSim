@@ -53,5 +53,13 @@ public class PredatorBehaviour : AnimalBehaviour
     {
 
     }
+    public override void Death()
+    {
+        Destroy(gameObject);
+    }
+    public override void Eat()
+    {
+        HungerMeter = 100;
+    }
 
 }

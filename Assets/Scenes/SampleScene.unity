@@ -122,6 +122,58 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &594845543
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 594845545}
+  - component: {fileID: 594845544}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &594845544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594845543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 274e3b4136253e44ab0d82798708182a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Herbivore: {fileID: 1944641209}
+  Plant: {fileID: 1996314523}
+  numHerb: 10
+  numPlants: 10
+  minPositionX: -10
+  maxPositionX: 10
+  minPositionZ: -10
+  maxPositionZ: 10
+--- !u!4 &594845545
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594845543}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.6748276, y: -2.1562223, z: 15.750786}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -604,7 +656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e41d0b73729f5a4c955e7d0d01be1ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HungerMeter: 100
+  HungerMeter: 10
   Direction: {x: 0, y: 0, z: 0}
   Destination: {x: 0, y: 0, z: 0}
   LookingForFood: 0
@@ -614,7 +666,8 @@ MonoBehaviour:
   herdRadius: 10
   runAwayRadius: 10
   HungerRate: 1
-  Plants: []
+  Plants:
+  - {fileID: 1996314523}
   Predators: []
 --- !u!1 &1996314523
 GameObject:
@@ -869,3 +922,4 @@ SceneRoots:
   - {fileID: 1904788713}
   - {fileID: 1944641215}
   - {fileID: 1996314527}
+  - {fileID: 594845545}
