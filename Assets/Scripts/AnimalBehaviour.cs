@@ -4,7 +4,6 @@ using UnityEngine;
 
 public abstract class AnimalBehaviour : MonoBehaviour
 {
-    public float HungerMeter;
     public Vector3 Direction;
     public Vector3 Destination;
     public bool LookingForFood = false;
@@ -20,8 +19,9 @@ public abstract class AnimalBehaviour : MonoBehaviour
         
     }
     public abstract void FindFood();
-    public abstract void Eat();
+    public abstract void Eat(GameObject food);
     public abstract void RunAway();
     public abstract void Move();
     public abstract void Death();
+    public abstract void Reproduce();
 }

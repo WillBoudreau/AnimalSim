@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class PredatorBehaviour : AnimalBehaviour
 {
     public float detectionRadius = 5f;
+    public float HungerMeter = 100f;
     public float runAwayRadius = 10f;
     public float speed = 2f;
     public GameObject[] Herbivores;
@@ -49,6 +50,16 @@ public class PredatorBehaviour : AnimalBehaviour
             }
         }
     }
+    public override void Reproduce()
+    {
+        foreach(GameObject predator in Herbivores)
+        {
+            if(Vector3.Distance(predator.transform.position, transform.position) < 5f)
+            {
+                GameObject newPredator = Instantiate(gameObject, transform.position, Quaternion.identity);
+            }
+        }
+    }
     public override void RunAway()
     {
 
@@ -57,7 +68,7 @@ public class PredatorBehaviour : AnimalBehaviour
     {
         Destroy(gameObject);
     }
-    public override void Eat()
+    public override void Eat(GameObject food)
     {
         HungerMeter = 100;
     }
