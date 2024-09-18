@@ -5,48 +5,51 @@ using UnityEngine.AI;
 
 public class HerbivoreBehaviour : AnimalBehaviour
 {
-    public NavMeshAgent agent;
     public float HungerMeter = 100f;
     public float speed = 2f;
     public float detectionRadius = 5f;
-    public GameObject closestPlant = null;
     public float herdRadius = 10f;
     public float runAwayRadius = 10f;
     public float HungerRate = 10f;
-    public GameObject closestHerbivore = null;
     public float ReproduceRate = 10f;
 
+    public NavMeshAgent agent;
+    public GameObject closestHerbivore = null;
+    public GameObject closestPlant = null;
+
     public GameObject[] Herbivores;
-
-    public GameObject[] Plants;
     public GameObject[] Predators;
-
+    Renderer HerbMat;
 
     // Start is called before the first frame update
     void Start()
     {
+        HerbMat = GetComponent<Renderer>();
+        HerbMat.material.color = Color.blue;
         agent = GetComponent<NavMeshAgent>();
-        Move();
+        //Move();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
         Predators = GameObject.FindGameObjectsWithTag("Predator");
-        Plants = GameObject.FindGameObjectsWithTag("Plant");
-        Hunger();
+        Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
+        //Hunger();
+        Move();
+        Herd();
         if(HungerMeter > 50)
         {
-            Reproduce();
-            Move();
-            Herd();
+            //Reproduce();
         }
         else if(HungerMeter <= 50)
         {
-            FindFood();
+            //FindFood();
         }
-        Death();
+        else if(HungerMeter <= 0)
+        {
+            Death();
+        }
     }
     public override void Reproduce()
     {
@@ -64,14 +67,26 @@ public class HerbivoreBehaviour : AnimalBehaviour
             ReproduceRate = 10f;
         }
     }
+    public void Herd()
+    {
+        foreach (GameObject herbivore in Herbivores)
+        {
+            Debug.Log("Herd");
+            if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius && Vector3.Distance(herbivore.transform.position, transform.position) > 8f)
+            {
+                agent.SetDestination(herbivore.transform.position);
+            }
+        }
+    }
     public override void Move()
     {
-        if(agent.remainingDistance < 1f)
+        if(agent.remainingDistance < 0.5f)
         {
             Direction = Random.insideUnitSphere * 10f;
             Destination = transform.position + Direction;
             agent.SetDestination(Destination);
         }
+        
     }
     public void Hunger()
     {
@@ -106,17 +121,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
     {
         HungerMeter += 50f;
         Destroy(plant);
-    }
-    public void Herd()
-    {
-        Debug.Log("Herd");
-        foreach (GameObject herbivore in GameObject.FindGameObjectsWithTag("Herbivore"))
-        {
-            if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius && Vector3.Distance(herbivore.transform.position, transform.position) > 5f)
-            {
-                agent.SetDestination(herbivore.transform.position);
-            }
-        }
     }
     public override void RunAway()
     {

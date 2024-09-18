@@ -7,6 +7,11 @@ public abstract class AnimalBehaviour : MonoBehaviour
     public Vector3 Direction;
     public Vector3 Destination;
     public bool LookingForFood = false;
+
+
+    public GameObject[] Plants;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +21,7 @@ public abstract class AnimalBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Plants = GameObject.FindGameObjectsWithTag("Plant");
     }
     public abstract void FindFood();
     public abstract void Eat(GameObject food);
