@@ -57,6 +57,10 @@ public class PredatorBehaviour : AnimalBehaviour
             if (Vector3.Distance(herbivore.transform.position, transform.position) < detectionRadius)
             {
                 agent.SetDestination(herbivore.transform.position);
+                if(Vector3.Distance(herbivore.transform.position,transform.position) < 1f)
+                {
+                    Eat(herbivore);
+                }
             }
         }
     }
@@ -80,6 +84,7 @@ public class PredatorBehaviour : AnimalBehaviour
     }
     public override void Eat(GameObject food)
     {
+        GameObject.Destroy(food);
         HungerMeter = 100;
     }
 

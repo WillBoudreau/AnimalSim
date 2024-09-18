@@ -38,6 +38,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
         //Hunger();
         Move();
         Herd();
+        RunAway();
         if(HungerMeter > 50)
         {
             //Reproduce();
@@ -71,7 +72,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
     {
         foreach (GameObject herbivore in Herbivores)
         {
-            Debug.Log("Herd");
             if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius && Vector3.Distance(herbivore.transform.position, transform.position) > 8f)
             {
                 agent.SetDestination(herbivore.transform.position);
@@ -86,7 +86,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
             Destination = transform.position + Direction;
             agent.SetDestination(Destination);
         }
-        
     }
     public void Hunger()
     {
