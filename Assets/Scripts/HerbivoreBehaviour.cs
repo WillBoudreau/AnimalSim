@@ -10,7 +10,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
     public float detectionRadius = 5f;
     public float herdRadius = 10f;
     public float runAwayRadius = 10f;
-    public float HungerRate = 10f;
+    public float HungerRate = 1f;
     public float ReproduceRate = 10f;
 
     public NavMeshAgent agent;
@@ -19,6 +19,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
 
     public GameObject[] Herbivores;
     public GameObject[] Predators;
+    public GameObject[] Plants;
     Renderer HerbMat;
 
     // Start is called before the first frame update
@@ -35,22 +36,26 @@ public class HerbivoreBehaviour : AnimalBehaviour
     {
         Predators = GameObject.FindGameObjectsWithTag("Predator");
         Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
-        //Hunger();
-        Move();
-        Herd();
-        RunAway();
-        if(HungerMeter > 50)
+        Plants = GameObject.FindGameObjectsWithTag("Plant");
+       
+        if(HungerMeter > 50f)
         {
-            //Reproduce();
+            Herd();
+            Move();
+            Hunger();
+            RunAway();
         }
-        else if(HungerMeter <= 50)
+        if(HungerMeter <= 50f)
         {
-            //FindFood();
+            Hunger();
+            FindFood();
+            RunAway();
         }
-        else if(HungerMeter <= 0)
+        if(HungerMeter <= 0)
         {
             Death();
         }
+
     }
     public override void Reproduce()
     {
@@ -72,7 +77,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
     {
         foreach (GameObject herbivore in Herbivores)
         {
-            if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius && Vector3.Distance(herbivore.transform.position, transform.position) > 8f)
+            if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius && Vector3.Distance(herbivore.transform.position, transform.position) > 5f)
             {
                 agent.SetDestination(herbivore.transform.position);
             }

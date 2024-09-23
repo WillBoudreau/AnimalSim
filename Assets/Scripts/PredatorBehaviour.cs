@@ -11,6 +11,7 @@ public class PredatorBehaviour : AnimalBehaviour
     public float speed = 2f;
     public float HungerRate = 1f;
     public NavMeshAgent agent;
+    public int HerbCount = 0;
     public GameObject[] Herbivores;
     Renderer PredMat;
     // Start is called before the first frame update
@@ -25,27 +26,26 @@ public class PredatorBehaviour : AnimalBehaviour
     void Update()
     {
         Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
-        Move();
-        FindFood();
-        //HungerMeter -= HungerRate * Time.deltaTime;
-        //if (HungerMeter < 0)
-        //{
-        //    Destroy(gameObject);
-        //}
-        //else if (HungerMeter < 50)
-        //{
-        //    FindFood();
-        //}
-        //else
-        //{
-        //    Move();
-        //}
+        HungerMeter -= HungerRate * Time.deltaTime;
+        if (HungerMeter < 0)
+        {
+           Destroy(gameObject);
+        }
+        else if (HungerMeter < 70)
+        {
+           FindFood();
+        }
+        else
+        {
+           Move();
+           RunAway();
+        }
     }
     public override void Move()
     {
         if (agent.remainingDistance < 0.5f)
         {
-            Direction = Random.insideUnitSphere * 10f;
+            Direction = Random.insideUnitSphere * 5f;
             Destination = transform.position + Direction;
             agent.SetDestination(Destination);
         }
@@ -54,14 +54,11 @@ public class PredatorBehaviour : AnimalBehaviour
     {
         foreach (GameObject herbivore in Herbivores)
         {
-            if (Vector3.Distance(herbivore.transform.position, transform.position) < detectionRadius)
-            {
-                agent.SetDestination(herbivore.transform.position);
+                 agent.SetDestination(herbivore.transform.position);
                 if(Vector3.Distance(herbivore.transform.position,transform.position) < 1f)
                 {
                     Eat(herbivore);
                 }
-            }
         }
     }
     public override void Reproduce()
@@ -76,7 +73,18 @@ public class PredatorBehaviour : AnimalBehaviour
     }
     public override void RunAway()
     {
-
+        foreach (GameObject herbivore in Herbivores)
+        {
+            if (Vector3.Distance(herbivore.transform.position, transform.position) < runAwayRadius)
+            {
+                HerbCount++;
+                Debug.Log("HerbCount " + HerbCount);
+            }
+            if (HerbCount > 2)
+            {
+                agent.SetDestination(transform.position - herbivore.transform.position);
+            }
+        }
     }
     public override void Death()
     {
