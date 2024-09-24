@@ -13,6 +13,7 @@ public class PredatorBehaviour : AnimalBehaviour
     public NavMeshAgent agent;
     public int HerbCount = 0;
     public GameObject[] Herbivores;
+    public GameObject[] Predators;
     Renderer PredMat;
     // Start is called before the first frame update
     void Start()
@@ -25,11 +26,12 @@ public class PredatorBehaviour : AnimalBehaviour
     // Update is called once per frame
     void Update()
     {
+        Predators = GameObject.FindGameObjectsWithTag("Predator");
         Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
         HungerMeter -= HungerRate * Time.deltaTime;
         if (HungerMeter < 0)
         {
-           Destroy(gameObject);
+            Death();
         }
         else if (HungerMeter < 70)
         {
@@ -38,7 +40,6 @@ public class PredatorBehaviour : AnimalBehaviour
         else
         {
            Move();
-           RunAway();
         }
     }
     public override void Move()
@@ -52,6 +53,17 @@ public class PredatorBehaviour : AnimalBehaviour
     }
     public override void FindFood()
     {
+        if(HungerMeter <= 40)
+        {
+            foreach(GameObject predator in Predators)
+            {
+                agent.SetDestination(predator.transform.position);
+                if(Vector3.Distance(predator.transform.position,transform.position) < 1f)
+                {
+                    Eat(predator);
+                }
+            }
+        }
         foreach (GameObject herbivore in Herbivores)
         {
                  agent.SetDestination(herbivore.transform.position);
@@ -63,13 +75,7 @@ public class PredatorBehaviour : AnimalBehaviour
     }
     public override void Reproduce()
     {
-        //foreach (GameObject predator in Herbivores)
-        //{
-        //    if (Vector3.Distance(predator.transform.position, transform.position) < 5f)
-        //    {
-        //        GameObject newPredator = Instantiate(gameObject, transform.position, Quaternion.identity);
-        //    }
-        //}
+        throw new System.NotImplementedException();
     }
     public override void RunAway()
     {

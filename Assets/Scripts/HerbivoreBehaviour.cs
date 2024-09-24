@@ -37,7 +37,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
         Predators = GameObject.FindGameObjectsWithTag("Predator");
         Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
         Plants = GameObject.FindGameObjectsWithTag("Plant");
-       
         if(HungerMeter > 50f)
         {
             Herd();
@@ -75,11 +74,14 @@ public class HerbivoreBehaviour : AnimalBehaviour
     }
     public void Herd()
     {
-        foreach (GameObject herbivore in Herbivores)
+        if(LookingForFood == false)
         {
-            if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius && Vector3.Distance(herbivore.transform.position, transform.position) > 5f)
+            foreach (GameObject herbivore in Herbivores)
             {
-                agent.SetDestination(herbivore.transform.position);
+                if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius && Vector3.Distance(herbivore.transform.position, transform.position) > 5f)
+                {
+                    agent.SetDestination(herbivore.transform.position);
+                }
             }
         }
     }
@@ -100,11 +102,10 @@ public class HerbivoreBehaviour : AnimalBehaviour
     {
         LookingForFood = true;
         float closestDistance = Mathf.Infinity;
-
         foreach (GameObject plant in Plants)
         {
             float distance = Vector3.Distance(plant.transform.position, transform.position);
-            if (distance < detectionRadius && distance < closestDistance)
+            if (distance < closestDistance)
             {
                 closestPlant = plant;
                 closestDistance = distance;
@@ -114,7 +115,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
         if (closestPlant != null)
         {
             agent.SetDestination(closestPlant.transform.position);
-            if (Vector3.Distance(closestPlant.transform.position, transform.position) < 1f)
+            if (Vector3.Distance(closestPlant.transform.position, transform.position) < 5f)
             {
                 Eat(closestPlant);
             }
@@ -125,6 +126,11 @@ public class HerbivoreBehaviour : AnimalBehaviour
     {
         HungerMeter += 50f;
         Destroy(plant);
+        if(HungerMeter > 100)
+        {
+            HungerMeter = 100;
+        }
+        LookingForFood = false;
     }
     public override void RunAway()
     {
