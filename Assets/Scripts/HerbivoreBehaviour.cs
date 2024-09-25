@@ -28,7 +28,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
         HerbMat = GetComponent<Renderer>();
         HerbMat.material.color = Color.blue;
         agent = GetComponent<NavMeshAgent>();
-        //Move();
     }
 
     // Update is called once per frame
@@ -101,7 +100,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
         if (closestPlant != null)
         {
             agent.SetDestination(closestPlant.transform.position);
-            if (Vector3.Distance(closestPlant.transform.position, transform.position) < 5f)
+            if (Vector3.Distance(closestPlant.transform.position, transform.position) < detectionRadius)
             {
                 Eat(closestPlant);
             }
