@@ -39,7 +39,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
         Plants = GameObject.FindGameObjectsWithTag("Plant");
         if(HungerMeter > 50f)
         {
-            Herd();
             Move();
             Hunger();
             RunAway();
@@ -70,19 +69,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
                 }
             }
             ReproduceRate = 10f;
-        }
-    }
-    public void Herd()
-    {
-        if(LookingForFood == false)
-        {
-            foreach (GameObject herbivore in Herbivores)
-            {
-                if (Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius && Vector3.Distance(herbivore.transform.position, transform.position) > 5f)
-                {
-                    agent.SetDestination(herbivore.transform.position);
-                }
-            }
         }
     }
     public override void Move()

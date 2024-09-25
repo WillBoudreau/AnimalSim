@@ -64,13 +64,26 @@ public class PredatorBehaviour : AnimalBehaviour
                 }
             }
         }
+        int herbivoresInRadius = 0;
         foreach (GameObject herbivore in Herbivores)
         {
-                 agent.SetDestination(herbivore.transform.position);
-                if(Vector3.Distance(herbivore.transform.position,transform.position) < 1f)
-                {
-                    Eat(herbivore);
-                }
+            if (Vector3.Distance(herbivore.transform.position, transform.position) < detectionRadius)
+            {
+            herbivoresInRadius++;
+            Debug.Log("Herbivores in radius: " + herbivoresInRadius);
+            }
+        }
+
+        if (herbivoresInRadius <= 2) // Adjust the number as needed
+        {
+            foreach (GameObject herbivore in Herbivores)
+            {
+                agent.SetDestination(herbivore.transform.position);
+            if (Vector3.Distance(herbivore.transform.position, transform.position) < 1f)
+            {
+                Eat(herbivore);
+            }
+            }
         }
     }
     public override void Reproduce()
