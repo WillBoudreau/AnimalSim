@@ -28,6 +28,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
         HerbMat = GetComponent<Renderer>();
         HerbMat.material.color = Color.blue;
         agent = GetComponent<NavMeshAgent>();
+        Move();
     }
 
     // Update is called once per frame
@@ -41,6 +42,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
             Move();
             Hunger();
             RunAway();
+            Reproduce();
         }
         if(HungerMeter <= 50f)
         {
@@ -56,18 +58,12 @@ public class HerbivoreBehaviour : AnimalBehaviour
     }
     public override void Reproduce()
     {
-        ReproduceRate -= Time.deltaTime;
-        Debug.Log("Reproduce rate " + ReproduceRate);
-        if(ReproduceRate <= 0)
+        if(HungerMeter >= ReproduceRate)
         {
-            foreach (GameObject herbivore in Herbivores)
-            {
-                if (Vector3.Distance(herbivore.transform.position, transform.position) < 5f)
-                {
-                    GameObject newHerbivore = Instantiate(gameObject, transform.position, Quaternion.identity);
-                }
-            }
-            ReproduceRate = 10f;
+            Debug.Log(ReproduceRate);
+            ReproduceRate += 10f;
+            Vector3 randomPosition = new Vector3(Random.Range(-10f, 10f), 0f, Random.Range(-10f, 10f));
+            GameObject herbivore = Instantiate(gameObject, randomPosition, Quaternion.identity);
         }
     }
     public override void Move()

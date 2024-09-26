@@ -73,17 +73,20 @@ public class PredatorBehaviour : AnimalBehaviour
             Debug.Log("Herbivores in radius: " + herbivoresInRadius);
             }
         }
-
-        if (herbivoresInRadius <= 2) // Adjust the number as needed
+        if(HungerMeter <= 70)
         {
-            foreach (GameObject herbivore in Herbivores)
+            if (herbivoresInRadius <= 2) // Adjust the number as needed
             {
-                agent.SetDestination(herbivore.transform.position);
-            if (Vector3.Distance(herbivore.transform.position, transform.position) < 1f)
-            {
-                Eat(herbivore);
+                foreach (GameObject herbivore in Herbivores)
+                {
+                    agent.SetDestination(herbivore.transform.position);
+                    if (Vector3.Distance(herbivore.transform.position, transform.position) < 1f)
+                    {
+                        Eat(herbivore);
+                    }      
+                }
             }
-            }
+            
         }
     }
     public override void Reproduce()
