@@ -40,14 +40,12 @@ public class HerbivoreBehaviour : AnimalBehaviour
         if(HungerMeter > 50f)
         {
             Move();
-            //Hunger();
             RunAway();
             //Reproduce();
         }
         if(HungerMeter <= 50f)
         {
             LookingForFood = true;
-            //Hunger();
             FindFood();
             RunAway();
         }
@@ -55,6 +53,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
         {
             Death();
         }
+        Hunger();
         Move();
         //FindFood();
 
@@ -146,15 +145,6 @@ public class HerbivoreBehaviour : AnimalBehaviour
             agent.SetDestination(Destination);
         }
     }
-    //public override void Move()
-    //{
-    //    if(agent.remainingDistance < 0.5f)
-    //    {
-    //        Direction = Random.insideUnitSphere * 10f;
-    //        Destination = transform.position + Direction;
-    //        agent.SetDestination(Destination);
-    //    }
-    //}
     public void Hunger()
     {
         HungerMeter -= HungerRate * Time.deltaTime;

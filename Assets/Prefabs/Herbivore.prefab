@@ -124,17 +124,20 @@ MonoBehaviour:
   Direction: {x: 0, y: 0, z: 0}
   Destination: {x: 0, y: 0, z: 0}
   LookingForFood: 0
-  agent: {fileID: 2254201627033221334}
-  HungerMeter: 10
+  HungerMeter: 100
   speed: 2
   detectionRadius: 5
-  closestPlant: {fileID: 0}
   herdRadius: 10
   runAwayRadius: 10
   HungerRate: 1
+  ReproduceRate: 10
+  agent: {fileID: 2254201627033221334}
+  closestHerbivore: {fileID: 0}
+  closestPlant: {fileID: 0}
+  Herbivores: []
+  Predators: []
   Plants:
   - {fileID: 0}
-  Predators: []
 --- !u!195 &2254201627033221334
 NavMeshAgent:
   m_ObjectHideFlags: 0
