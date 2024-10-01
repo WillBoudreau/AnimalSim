@@ -28,7 +28,7 @@ public class PredatorBehaviour : AnimalBehaviour
     {
         Predators = GameObject.FindGameObjectsWithTag("Predator");
         Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
-        HungerMeter -= HungerRate * Time.deltaTime;
+        Hunger();
         if (HungerMeter < 0)
         {
             Death();
@@ -41,6 +41,10 @@ public class PredatorBehaviour : AnimalBehaviour
         {
            Move();
         }
+    }
+    void Hunger()
+    {
+        HungerMeter -= HungerRate * Time.deltaTime;
     }
     public override void Move()
     {
@@ -75,18 +79,14 @@ public class PredatorBehaviour : AnimalBehaviour
         }
         if(HungerMeter <= 70)
         {
-            if (herbivoresInRadius <= 2) // Adjust the number as needed
+            foreach (GameObject herbivore in Herbivores)
             {
-                foreach (GameObject herbivore in Herbivores)
+                agent.SetDestination(herbivore.transform.position);
+                if (Vector3.Distance(herbivore.transform.position, transform.position) < 1f)
                 {
-                    agent.SetDestination(herbivore.transform.position);
-                    if (Vector3.Distance(herbivore.transform.position, transform.position) < 1f)
-                    {
-                        Eat(herbivore);
-                    }      
+                    Eat(herbivore);
                 }
             }
-            
         }
     }
     public override void Reproduce()

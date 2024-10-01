@@ -28,26 +28,26 @@ public class HerbivoreBehaviour : AnimalBehaviour
         HerbMat = GetComponent<Renderer>();
         HerbMat.material.color = Color.blue;
         agent = GetComponent<NavMeshAgent>();
-        Predators = GameObject.FindGameObjectsWithTag("Predator");
-        Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
         Move();
     }
 
     // Update is called once per frame
     void Update()
     {
+        Predators = GameObject.FindGameObjectsWithTag("Predator");
+        Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
         Plants = GameObject.FindGameObjectsWithTag("Plant");
         if(HungerMeter > 50f)
         {
             Move();
-            Hunger();
+            //Hunger();
             RunAway();
             //Reproduce();
         }
         if(HungerMeter <= 50f)
         {
             LookingForFood = true;
-            Hunger();
+            //Hunger();
             FindFood();
             RunAway();
         }
@@ -55,6 +55,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
         {
             Death();
         }
+        Move();
         //FindFood();
 
     }
@@ -68,92 +69,92 @@ public class HerbivoreBehaviour : AnimalBehaviour
             GameObject herbivore = Instantiate(gameObject, randomPosition, Quaternion.identity);
         }
     }
-//     Vector3 Cohesion()
-//     {
-//     Vector3 center = Vector3.zero;
-//     int count = 0;
-//     foreach (GameObject herbivore in Herbivores)
-//     {
-//         if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
-//         {
-//             center += herbivore.transform.position;
-//             count++;
-//         }
-//     }
-//     if (count > 0)
-//     {
-//         center /= count;
-//         return (center - transform.position).normalized;
-//     }
-//     return Vector3.zero;
-//     }
+    Vector3 Cohesion()
+    {
+        Vector3 center = Vector3.zero;
+        int count = 0;
+        foreach (GameObject herbivore in Herbivores)
+        {
+            if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
+            {
+                center += herbivore.transform.position;
+                count++;
+            }
+        }
+        if (count > 0)
+        {
+            center /= count;
+            return (center - transform.position).normalized;
+        }
+        return Vector3.zero;
+    }
 
-//     Vector3 Separation()
-//     {
-//     Vector3 avoid = Vector3.zero;
-//     int count = 0;
-//     foreach (GameObject herbivore in Herbivores)
-//     {
-//         if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < detectionRadius)
-//         {
-//             avoid += (transform.position - herbivore.transform.position);
-//             count++;
-//         }
-//     }
-//     if (count > 0)
-//     {
-//         avoid /= count;
-//         return avoid.normalized;
-//     }
-//     return Vector3.zero;
-//     }
+    Vector3 Separation()
+    {
+        Vector3 avoid = Vector3.zero;
+        int count = 0;
+        foreach (GameObject herbivore in Herbivores)
+        {
+            if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < detectionRadius)
+            {
+                avoid += (transform.position - herbivore.transform.position);
+                count++;
+            }
+        }
+        if (count > 0)
+        {
+            avoid /= count;
+            return avoid.normalized;
+        }
+        return Vector3.zero;
+    }
 
-// Vector3 Alignment()
-// {
-//     Vector3 alignment = Vector3.zero;
-//     int count = 0;
-//     foreach (GameObject herbivore in Herbivores)
-//     {
-//         if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
-//         {
-//             alignment += herbivore.GetComponent<NavMeshAgent>().velocity;
-//             count++;
-//         }
-//     }
-//     if (count > 0)
-//     {
-//         alignment /= count;
-//         return alignment.normalized;
-//     }
-//     return Vector3.zero;
-// }
+    Vector3 Alignment()
+    {
+        Vector3 alignment = Vector3.zero;
+        int count = 0;
+        foreach (GameObject herbivore in Herbivores)
+        {
+            if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
+            {
+                alignment += herbivore.GetComponent<NavMeshAgent>().velocity;
+                count++;
+            }
+        }
+        if (count > 0)
+        {
+            alignment /= count;
+            return alignment.normalized;
+        }
+        return Vector3.zero;
+    }
 
-// public override void Move()
-// {
-//     if(agent.remainingDistance < 0.5f)
-//     {
-//         Vector3 flockDirection = Cohesion() + Separation() + Alignment();
-//         if(flockDirection == Vector3.zero)
-//         {
-//             Direction = Random.insideUnitSphere * 10f; // Random movement if no flock influence
-//         }
-//         else
-//         {
-//             Direction = flockDirection * 10f;
-//         }
-//         Destination = transform.position + Direction;
-//         agent.SetDestination(Destination);
-//     }
-// }
     public override void Move()
     {
-        if(agent.remainingDistance < 0.5f)
+        if (agent.remainingDistance < 0.5f)
         {
-            Direction = Random.insideUnitSphere * 10f;
+            Vector3 flockDirection = Cohesion() + Separation() + Alignment();
+            if (flockDirection == Vector3.zero)
+            {
+                Direction = Random.insideUnitSphere * 10f; // Random movement if no flock influence
+            }
+            else
+            {
+                Direction = flockDirection * 10f;
+            }
             Destination = transform.position + Direction;
             agent.SetDestination(Destination);
         }
     }
+    //public override void Move()
+    //{
+    //    if(agent.remainingDistance < 0.5f)
+    //    {
+    //        Direction = Random.insideUnitSphere * 10f;
+    //        Destination = transform.position + Direction;
+    //        agent.SetDestination(Destination);
+    //    }
+    //}
     public void Hunger()
     {
         HungerMeter -= HungerRate * Time.deltaTime;
