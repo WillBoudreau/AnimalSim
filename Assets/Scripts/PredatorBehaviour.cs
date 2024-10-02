@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class PredatorBehaviour : AnimalBehaviour
 {
+    //Variables to influence the Predator's behavior
     public float detectionRadius = 5f;
     public float HungerMeter = 100f;
     public float runAwayRadius = 10f;
@@ -12,6 +13,8 @@ public class PredatorBehaviour : AnimalBehaviour
     public float HungerRate = 1f;
     public NavMeshAgent agent;
     public int HerbCount = 0;
+
+    //Arrays to store all Herbivores and Predators in the scene
     public GameObject[] Herbivores;
     public GameObject[] Predators;
     Renderer PredMat;
@@ -26,8 +29,7 @@ public class PredatorBehaviour : AnimalBehaviour
     // Update is called once per frame
     void Update()
     {
-        Predators = GameObject.FindGameObjectsWithTag("Predator");
-        Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
+        DetectEnviroment();
         Hunger();
         if (HungerMeter < 0)
         {
@@ -41,6 +43,11 @@ public class PredatorBehaviour : AnimalBehaviour
         {
            Move();
         }
+    }
+    void DetectEnviroment()
+    {
+        Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
+        Predators = GameObject.FindGameObjectsWithTag("Predator");
     }
     void Hunger()
     {
@@ -59,14 +66,7 @@ public class PredatorBehaviour : AnimalBehaviour
     {
         if(HungerMeter <= 40)
         {
-            foreach(GameObject predator in Predators)
-            {
-                agent.SetDestination(predator.transform.position);
-                if(Vector3.Distance(predator.transform.position,transform.position) < 1f)
-                {
-                    Eat(predator);
-                }
-            }
+            FindPred();
         }
         int herbivoresInRadius = 0;
         foreach (GameObject herbivore in Herbivores)
@@ -79,13 +79,28 @@ public class PredatorBehaviour : AnimalBehaviour
         }
         if(HungerMeter <= 70)
         {
-            foreach (GameObject herbivore in Herbivores)
+           FindHerb();
+        }
+    }
+    void FindHerb()
+    {
+        foreach (GameObject herbivore in Herbivores)
+        {
+            agent.SetDestination(herbivore.transform.position);
+            if (Vector3.Distance(herbivore.transform.position, transform.position) < 1f)
             {
-                agent.SetDestination(herbivore.transform.position);
-                if (Vector3.Distance(herbivore.transform.position, transform.position) < 1f)
-                {
-                    Eat(herbivore);
-                }
+                Eat(herbivore);
+            }
+        }
+    }
+    void FindPred()
+    {
+        foreach (GameObject predator in Predators)
+        {
+            agent.SetDestination(predator.transform.position);
+            if (Vector3.Distance(predator.transform.position, transform.position) < 1f)
+            {
+                Eat(predator);
             }
         }
     }
@@ -95,18 +110,15 @@ public class PredatorBehaviour : AnimalBehaviour
     }
     public override void RunAway()
     {
+        Vector3 runDirection = Vector3.zero;
         foreach (GameObject herbivore in Herbivores)
         {
-            if (Vector3.Distance(herbivore.transform.position, transform.position) < runAwayRadius)
+            if(Vector3.Distance(herbivore.transform.position, transform.position) < runAwayRadius)
             {
-                HerbCount++;
-                Debug.Log("HerbCount " + HerbCount);
-            }
-            if (HerbCount > 2)
-            {
-                agent.SetDestination(transform.position - herbivore.transform.position);
+                runDirection += transform.position - herbivore.transform.position;
             }
         }
+        agent.SetDestination(transform.position + runDirection);
     }
     public override void Death()
     {

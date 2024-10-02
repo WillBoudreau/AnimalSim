@@ -5,8 +5,11 @@ using UnityEngine;
 public class PlantBehaviour : MonoBehaviour
 {
     Renderer PlantMat;
+    [Header("Plant Life")]
     public float essence;
+    public float lifespan = 30f;
     public float essenceMax;
+    [Header("Plant Stats")]
     public GameObject Seed;
     bool SeedPlanted;
     public float minPosX;
@@ -31,12 +34,17 @@ public class PlantBehaviour : MonoBehaviour
     void Update()
     {
         essence += Time.deltaTime;
+        lifespan -= Time.deltaTime;
+        if(lifespan <= 0)
+        {
+            Death();
+        }
         PlantSeed();
     }
     //Plant seed at random location if essense is high enough
     void PlantSeed()
     {
-        if(essence > 15)
+        if(essence > 15 && !SeedPlanted)
         {
             Vector3 randPOS = new Vector3(Random.Range(minPosX, maxPosX), 0f, Random.Range(minPosZ, maxPosZ));
             //Spawn Seed in a random position inside of a certain range
@@ -54,5 +62,10 @@ public class PlantBehaviour : MonoBehaviour
             Vector3 randPOS = new Vector3(Random.Range(minPosX, maxPosX), 0f, Random.Range(minPosZ, maxPosZ));
             GameObject plant = Instantiate(this.gameObject,randPOS, Quaternion.identity); 
         }
+        
+    }
+    void Death()
+    {
+        Destroy(this.gameObject);
     }
 }

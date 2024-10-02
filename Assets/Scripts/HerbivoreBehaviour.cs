@@ -5,17 +5,22 @@ using UnityEngine.AI;
 
 public class HerbivoreBehaviour : AnimalBehaviour
 {
+    //Variables to influence the Herbivore's behavior
     public float HungerMeter = 100f;
     public float speed = 2f;
     public float detectionRadius = 5f;
     public float herdRadius = 10f;
     public float runAwayRadius = 10f;
     public float HungerRate = 1f;
-    public float ReproduceRate = 10f;
+    public float ReproduceRate = 100f;
+
+    //Variables to store the closest Herbivore, Plant, and the Herbivore's NavMeshAgent
 
     public NavMeshAgent agent;
     public GameObject closestHerbivore = null;
     public GameObject closestPlant = null;
+
+    //Arrays to store all Herbivores, Predators, and Plants in the scene
 
     public GameObject[] Herbivores;
     public GameObject[] Predators;
@@ -25,6 +30,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DetectEnviroment();
         HerbMat = GetComponent<Renderer>();
         HerbMat.material.color = Color.blue;
         agent = GetComponent<NavMeshAgent>();
@@ -34,14 +40,13 @@ public class HerbivoreBehaviour : AnimalBehaviour
     // Update is called once per frame
     void Update()
     {
-        Predators = GameObject.FindGameObjectsWithTag("Predator");
-        Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
-        Plants = GameObject.FindGameObjectsWithTag("Plant");
+        DetectEnviroment();
+        ReproduceRate -= Time.deltaTime;
+        Hunger();
         if(HungerMeter > 50f)
         {
-            Move();
             RunAway();
-            //Reproduce();
+            Reproduce();
         }
         if(HungerMeter <= 50f)
         {
@@ -53,81 +58,26 @@ public class HerbivoreBehaviour : AnimalBehaviour
         {
             Death();
         }
-        Hunger();
-        Move();
-        //FindFood();
+        Move(); //Continuous flocking behavior
 
+    }
+    void DetectEnviroment()
+    {
+        Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
+        Predators = GameObject.FindGameObjectsWithTag("Predator");
+        Plants = GameObject.FindGameObjectsWithTag("Plant");
     }
     public override void Reproduce()
     {
-        if(HungerMeter >= ReproduceRate)
+        if(ReproduceRate <= 0 && HungerMeter > 50f)
         {
             Debug.Log(ReproduceRate);
             ReproduceRate += 10f;
-            Vector3 randomPosition = new Vector3(Random.Range(-10f, 10f), 0f, Random.Range(-10f, 10f));
-            GameObject herbivore = Instantiate(gameObject, randomPosition, Quaternion.identity);
+            GameObject herbivore = Instantiate(gameObject, transform.position, Quaternion.identity);
+            ReproduceRate = 100f;//Reset the ReproduceRate
         }
     }
-    Vector3 Cohesion()
-    {
-        Vector3 center = Vector3.zero;
-        int count = 0;
-        foreach (GameObject herbivore in Herbivores)
-        {
-            if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
-            {
-                center += herbivore.transform.position;
-                count++;
-            }
-        }
-        if (count > 0)
-        {
-            center /= count;
-            return (center - transform.position).normalized;
-        }
-        return Vector3.zero;
-    }
-
-    Vector3 Separation()
-    {
-        Vector3 avoid = Vector3.zero;
-        int count = 0;
-        foreach (GameObject herbivore in Herbivores)
-        {
-            if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < detectionRadius)
-            {
-                avoid += (transform.position - herbivore.transform.position);
-                count++;
-            }
-        }
-        if (count > 0)
-        {
-            avoid /= count;
-            return avoid.normalized;
-        }
-        return Vector3.zero;
-    }
-
-    Vector3 Alignment()
-    {
-        Vector3 alignment = Vector3.zero;
-        int count = 0;
-        foreach (GameObject herbivore in Herbivores)
-        {
-            if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
-            {
-                alignment += herbivore.GetComponent<NavMeshAgent>().velocity;
-                count++;
-            }
-        }
-        if (count > 0)
-        {
-            alignment /= count;
-            return alignment.normalized;
-        }
-        return Vector3.zero;
-    }
-
+    //Movement in Herd following flocking, seperation and cohesion
     public override void Move()
     {
         if (agent.remainingDistance < 0.5f)
@@ -200,5 +150,64 @@ public class HerbivoreBehaviour : AnimalBehaviour
             HungerMeter = 0;
             Destroy(gameObject);
         }
+    }
+    Vector3 Cohesion()
+    {
+        Vector3 center = Vector3.zero;
+        int count = 0;
+        foreach (GameObject herbivore in Herbivores)
+        {
+            if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
+            {
+                center += herbivore.transform.position;
+                count++;
+            }
+        }
+        if (count > 0)
+        {
+            center /= count;
+            return (center - transform.position).normalized;
+        }
+        return Vector3.zero;
+    }
+
+    Vector3 Separation()
+    {
+        Vector3 avoid = Vector3.zero;
+        int count = 0;
+        foreach (GameObject herbivore in Herbivores)
+        {
+            if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < detectionRadius)
+            {
+                avoid += (transform.position - herbivore.transform.position);
+                count++;
+            }
+        }
+        if (count > 0)
+        {
+            avoid /= count;
+            return avoid.normalized;
+        }
+        return Vector3.zero;
+    }
+
+    Vector3 Alignment()
+    {
+        Vector3 alignment = Vector3.zero;
+        int count = 0;
+        foreach (GameObject herbivore in Herbivores)
+        {
+            if (herbivore != this.gameObject && Vector3.Distance(herbivore.transform.position, transform.position) < herdRadius)
+            {
+                alignment += herbivore.GetComponent<NavMeshAgent>().velocity;
+                count++;
+            }
+        }
+        if (count > 0)
+        {
+            alignment /= count;
+            return alignment.normalized;
+        }
+        return Vector3.zero;
     }
 }
