@@ -135,7 +135,7 @@ public class HerbivoreBehaviour : AnimalBehaviour
             Vector3 flockDirection = Cohesion() + Separation() + Alignment();
             if (flockDirection == Vector3.zero)
             {
-                Direction = Random.insideUnitSphere * 10f; // Random movement if no flock influence
+                Direction = Random.insideUnitSphere * 10f; 
             }
             else
             {
