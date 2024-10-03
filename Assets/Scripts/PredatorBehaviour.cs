@@ -44,6 +44,7 @@ public class PredatorBehaviour : AnimalBehaviour
            Move();
         }
     }
+    //Detect the Herbivores and Predators in the scene
     void DetectEnviroment()
     {
         Herbivores = GameObject.FindGameObjectsWithTag("Herbivore");
@@ -53,6 +54,7 @@ public class PredatorBehaviour : AnimalBehaviour
     {
         HungerMeter -= HungerRate * Time.deltaTime;
     }
+    //Move the Predator
     public override void Move()
     {
         if (agent.remainingDistance < 0.5f)
@@ -62,6 +64,7 @@ public class PredatorBehaviour : AnimalBehaviour
             agent.SetDestination(Destination);
         }
     }
+    //Find food based on the HungerMeter
     public override void FindFood()
     {
         if(HungerMeter <= 40)

@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class PlantBehaviour : MonoBehaviour
 {
+    //Variables to influence the Plant's behavior
     Renderer PlantMat;
     [Header("Plant Life")]
     public float essence;
     public float lifespan = 30f;
     public float essenceMax;
+
+    //Variables to store the Plant's stats
     [Header("Plant Stats")]
     public GameObject Seed;
     bool SeedPlanted;
@@ -19,6 +22,7 @@ public class PlantBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Set the Plant's stats
         essenceMax = 100;
         minPosX = -25;
         maxPosX = 25;
